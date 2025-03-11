@@ -101,6 +101,12 @@ docker run employee-retirement-script
 ```
 This will run the CLI script and output the retirement computation results to the container logs.
 
+
 #### Logging
 The application uses Python's built-in logging module. A centralized logger is configured in src/utils/logger.py and used to provide clear, structured logs.
 
+
+#### Deployment
+App is deployed on Google Cloud Run.
+
+Swagger UI: https://tobi-flumaion-python-assessment-749119130796.us-central1.run.app/docs
