@@ -45,7 +45,7 @@ poetry install
 ```
 
 ### Running the Application
-#### CLI Script
+#### Method 1:  CLI Script
 To run the script entry point locally:
 
 
@@ -69,7 +69,7 @@ poetry run python -m src.main compute
 This command executes the script in "compute" mode and prints the computation results to the console.
 
 
-#### API Server
+#### Method 2: API Server
 To run the FastAPI application locally with auto-reload (development mode):
 
 ```bash Copy Edit
