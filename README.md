@@ -35,7 +35,7 @@ Dockerfiles for both API and script entry points.
 ```bash Copy Edit
 
 git clone git@github.com:code-matic/tobi-flumaion-python-assessment.git
-cd employee-retirement-calculation
+cd tobi-flumaion-python-assessment
 ```
 
 Install dependencies using Poetry:
