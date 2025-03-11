@@ -100,7 +100,7 @@ Run the container:
 ```bash Copy Edit
 docker run -p 8000:8000 employee-retirement-api
 ```
-Your FastAPI application will be available at http://localhost:8000.
+Your FastAPI application will be available at http://localhost:8000
 
 #### Script Docker Image
 Dockerfile.script
