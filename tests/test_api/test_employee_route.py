@@ -39,13 +39,28 @@ def test_list_retiring_employees(client):
 
     # Check that only one employee is returned as retiring.
     retiring_list = data["retiring_employees"]
+    
+
     assert isinstance(retiring_list, list)
-    # one inner list with one employee (Employee 3).
     assert len(retiring_list) == 1
-    inner = retiring_list[0]
-    assert isinstance(inner, list)
-    assert len(inner) == 1
-    emp = inner[0]
+    emp = retiring_list[0]
     assert emp["id"] == 3
     assert emp["name"] == "Goodness"
-    assert data["total_salary"] == 85000
+    assert data["total_salary"] == "85000"
+
+
+
+def test_add_employee(client):
+    payload = {
+        "name": "Test Employee",
+        "date_of_birth": "2000-01-01",  
+        "salary": 50000
+    }
+    response = client.post("/new-employee", json=payload)
+    assert response.status_code == 200
+
+    data = response.json()["data"]
+    assert data["id"] is not None
+    assert data["name"] == "Test Employee"
+    assert data["date_of_birth"] == "2000-01-01"
+    assert data["salary"] == "50000"

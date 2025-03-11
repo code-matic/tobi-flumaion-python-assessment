@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import src.core.db as core_db
 from datetime import date
-from src.schemas.employee import Employee
+from src.schemas.employee import BaseEmployee
 from src.repository.employee import EmployeeRepository
 
 
@@ -25,10 +25,10 @@ def test_create(employee_repository):
     initial_employees = employee_repository.get_all()
     initial_count = len(initial_employees)
 
-    new_employee = Employee(id=0,name="Amanda", date_of_birth=date(1998, 7, 7), salary=70000)
-    employee_repository.create(new_employee)
+    emp = BaseEmployee(name="Amanda", date_of_birth=date(1998, 7, 7), salary=70000)
+    new_employee = employee_repository.create(emp)
 
-    assert new_employee.id == str(initial_count + 1)
+    assert new_employee.id == initial_count + 1
     assert len(employee_repository.get_all()) == initial_count + 1
 
 def test_get(employee_repository):

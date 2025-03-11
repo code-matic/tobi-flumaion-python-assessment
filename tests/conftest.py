@@ -57,9 +57,9 @@ class FixedDateTime(datetime):
 
 
 @pytest.fixture
-def employee_repository(mock_employees):
+def employee_repository(mock_employees, monkeypatch):
     """
     Fixture to create an EmployeeRepository instance using a fake load_employee.
     """
-    with patch("src.repository.employee.load_employee", return_value=mock_employees):
-        yield EmployeeRepository()
+    monkeypatch.setattr("src.repository.employee.EMPLOYEES_DB", mock_employees)
+    yield EmployeeRepository()

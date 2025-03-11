@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch
 from tests.conftest import FixedDateTime
+from src import main
 
 
 def test_main(capsys, monkeypatch, mock_employees):
@@ -11,12 +12,12 @@ def test_main(capsys, monkeypatch, mock_employees):
     Only "Goodness" to appear, with a total salary of 85000.
     """
     
-    with patch("src.repository.employee.load_employee", return_value=mock_employees):
-        from src import main
-        monkeypatch.setattr(main, "datetime", FixedDateTime)
-        main.main()
-        captured = capsys.readouterr().out
+    monkeypatch.setattr("src.repository.employee.EMPLOYEES_DB", mock_employees)
+    monkeypatch.setattr(main, "datetime", FixedDateTime)
+    main.main()
+    captured = capsys.readouterr().out
 
+    print("captured", captured)
     # Assertions: verify that the printed output contains the expected information.
     assert "Computation Date: 2025-01-02" in captured
     assert "Retiring Employees:" in captured
