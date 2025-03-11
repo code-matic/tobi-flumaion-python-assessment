@@ -56,30 +56,6 @@ class FixedDateTime(datetime):
         return cls(2025, 1, 2)
 
 
-
-
-# @pytest.fixture
-# def employee_repository(mock_employees, monkeypatch):
-#     """
-#     Fixture to create an EmployeeRepository instance using a fake load_employee.
-#     """
-#     monkeypatch.setattr("src.repository.employee.EMPLOYEES_DB", mock_employees)
-#     yield EmployeeRepository()
-
-
-
-# @pytest.fixture
-# def test_db(tmp_path, monkeypatch, mock_employees):
-#     test_file = tmp_path / "employees_test.json"
-#     test_file.write_text(json.dumps([emp.model_dump() for emp in mock_employees], indent=2, default=default_converter))
-#     # Patch the DATA_FILE variable in src/core/db so that the repository loads from our test file.
-#     monkeypatch.setattr("src.core.db.DATA_FILE", str(test_file))
-#     import src.repository.employee as emp_mod
-#     importlib.reload(emp_mod)
-#     return str(test_file)
-
-
-
 @pytest.fixture
 def test_db(tmp_path, monkeypatch):
     """

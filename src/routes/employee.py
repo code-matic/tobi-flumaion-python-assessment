@@ -11,7 +11,6 @@ from src.core.db import get_db
 
 
 
-
 employee_router = APIRouter()
 
 def get_employee_repository(db:Session = Depends(get_db)) -> AbstractRepository:
