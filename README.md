@@ -52,14 +52,6 @@ To run the script entry point locally:
 
 You can run the application from the command line using different subcommands:
 
-##### Compute Retirement Information:
-To compute and display retirement information (e.g., list of retiring employees and total salary liability), run:
-
-```bash Copy Edit
-poetry run python -m src.main compute
-```
-This command executes the script in "compute" mode and prints the computation results to the console.
-
 ##### Add a New Employee:
 To add a new employee to the repository, use the "add" subcommand with the required parameters:
 
@@ -67,6 +59,14 @@ To add a new employee to the repository, use the "add" subcommand with the requi
 poetry run python -m src.main add --name "John Doe" --date_of_birth "1980-05-15" --salary 75000
 ```
 This command will add the new employee using the provided details and print the details of the newly added employee.
+
+##### Compute Retirement Information:
+To compute and display retirement information (e.g., list of retiring employees and total salary liability), run:
+
+```bash Copy Edit
+poetry run python -m src.main compute
+```
+This command executes the script in "compute" mode and prints the computation results to the console.
 
 
 #### API Server
