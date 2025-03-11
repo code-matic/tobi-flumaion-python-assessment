@@ -25,7 +25,7 @@ def get_retirement_service(
 
 
 @employee_router.get("/list-retiring-employees", response_model=RetirementResponse)
-def get_retiring_employees(retirement_service: RetirementService = Depends(get_retirement_service)):
+async def get_retiring_employees(retirement_service: RetirementService = Depends(get_retirement_service)):
     """
     Return a JSON response of employees retiring in the current year
     
@@ -38,7 +38,7 @@ def get_retiring_employees(retirement_service: RetirementService = Depends(get_r
 
 
 @employee_router.post("/new-employee", response_model=CreateEmployeeResponse)
-def add_employee(employee: BaseEmployee, employee_repository: AbstractRepository = Depends(get_employee_repository)):
+async def add_employee(employee: BaseEmployee, employee_repository: AbstractRepository = Depends(get_employee_repository)):
     """
     Add a new employee to the repository
     """

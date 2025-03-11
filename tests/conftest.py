@@ -3,10 +3,8 @@ import os
 import pytest
 import importlib
 from datetime import date, datetime
-from unittest.mock import patch
 from src.schemas.employee import Employee
 from src.repository.employee import EmployeeRepository
-from src.utils.utils import default_converter
 from src.core.db import Base, engine, SessionLocal
 
 
