@@ -2,26 +2,7 @@ import pytest
 from datetime import date
 from src.schemas.employee import Employee
 from src.services.retirement_service import RetirementService
-
-
-class MockEmployeeRepository:
-    """A mock repository for testing RetirementService."""
-    def __init__(self, employees):
-        self._employees = employees
-
-    def get_all(self):
-        return self._employees
-
-
-@pytest.fixture
-def mock_employees():
-    """
-    Create a list of mock employees for testing.
-    """
-    emp1 = Employee(id=1, name="Forever", date_of_birth=date(1958, 6, 15), salary=100000)
-    emp2 = Employee(id=2, name="Favour", date_of_birth=date(1960, 1, 1), salary=80000)
-    emp3 = Employee(id=3, name="Goodness", date_of_birth=date(1957, 12, 31), salary=90000)
-    return [emp1, emp2, emp3]
+from tests.conftest import MockEmployeeRepository
 
 
 @pytest.fixture
@@ -35,7 +16,6 @@ def test_get_retiring_employees(retirement_service):
     """
     Test that only employees whose 67th birthday is on or before the
     computation date are returned.
-
     For computation_date = 2025-01-01:
       - Forever (67th birthday: 2025-06-15) should NOT be included.
       - Favour (67th birthday: 2027-01-01) should NOT be included.

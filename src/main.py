@@ -11,7 +11,6 @@ logger = setup_logger(__name__)
 def main():
     logger.info("Starting retirement computation script.")
     computation_date = datetime.today().date()
-    logger.debug(f"Computation Date: {computation_date}")
     employee_repository = EmployeeRepository()
     retirement_service = RetirementService(employee_repository)
 

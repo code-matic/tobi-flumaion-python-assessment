@@ -7,29 +7,6 @@ from src.schemas.employee import Employee
 from src.repository.employee import EmployeeRepository
 
 
-@pytest.fixture
-def mock_employees():
-    """
-    Fixture to provide a controlled list of fake employees.
-    """
-    return [
-        Employee(id="1", name="Lanre", date_of_birth=date(2000, 1, 1), salary=50000),
-        Employee(id="2", name="Oluwatobi", date_of_birth=date(1999, 5, 1), salary=60000),
-    ]
-
-me =  [
-        Employee(id="1", name="Lanre", date_of_birth=date(2000, 1, 1), salary=50000),
-        Employee(id="2", name="Oluwatobi", date_of_birth=date(1999, 5, 1), salary=60000),
-    ]
-
-@pytest.fixture
-def employee_repository():
-    """
-    Fixture to create an EmployeeRepository instance using a fake load_employee.
-    """
-    with patch("src.repository.employee.load_employee", return_value=me):
-        yield EmployeeRepository()
-
 def test_get_all(employee_repository, mock_employees):
     """
     Test that get_all() returns all the employees from the repository.
@@ -61,7 +38,7 @@ def test_get(employee_repository):
     employee = employee_repository.get(1)
     assert employee is not None
     assert employee.id == 1
-    assert employee.name == "Lanre"
+    assert employee.name == "Forever"
 
     assert employee_repository.get("999") is None
 
