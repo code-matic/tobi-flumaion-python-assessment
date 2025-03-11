@@ -113,7 +113,7 @@ docker build -f Dockerfile.script -t employee-retirement-script .
 Run the container:
 
 ```bash Copy Edit
-docker run employee-retirement-script
+docker run employee-retirement-script compute
 ```
 This will run the CLI script and output the retirement computation results to the container logs.
 
