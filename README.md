@@ -1,8 +1,8 @@
 ## Employee Retirement Calculation Service
 This project is designed to calculate the retirement of employees based on their date of birth and a defined retirement age (67 years). It provides two entry points:
 
-- API Endpoint: A production-ready FastAPI application exposing endpoints for retrieving retiring employees and calculating total salary liability.
-- Script Entry Point: A command-line script that computes and prints the list of retiring employees along with their total salary liability.
+- **API Endpoint:** A production-ready FastAPI application exposing endpoints for retrieving retiring employees and calculating total salary liability.
+- **Script Entry Point:** A command-line script that computes and prints the list of retiring employees along with their total salary liability.
 
 ### Features
 #### Modular Architecture:
