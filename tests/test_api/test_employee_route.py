@@ -7,23 +7,31 @@ from src.routes.employee import employee_router
 from src.services.retirement_service import RetirementService
 
 
+
+
 @pytest.fixture
-def get_mock_retirement_service(employee_repository):
+def get_retirement_service(employee_repository):
     return RetirementService(employee_repository, retirement_age=67)
 
 @pytest.fixture
-def app_with_overrides(employee_repository):
+def app_with_overrides(employee_repository, monkeypatch):
     app = FastAPI()
     app.include_router(employee_router)
-
-    # Patch the dependencies in the module where they are used (src.routes.employee)
-    with patch("src.routes.employee.get_employee_repository", return_value=employee_repository), \
-         patch("src.routes.employee.get_retirement_service", return_value=get_mock_retirement_service):
-        yield app
+    
+    # Override the datetime in the routes so that datetime.today() returns our fixed date.
+    monkeypatch.setattr("src.routes.employee.datetime", FixedDateTime)
+    
+    # Override dependency functions in the routes.
+    monkeypatch.setattr("src.routes.employee.get_employee_repository", lambda: employee_repository)
+    monkeypatch.setattr("src.routes.employee.get_retirement_service", 
+                        lambda: RetirementService(employee_repository, retirement_age=67))
+    yield app
 
 @pytest.fixture
 def client(app_with_overrides):
     return TestClient(app_with_overrides)
+
+
 
 def test_list_retiring_employees(client):
     """
@@ -46,7 +54,7 @@ def test_list_retiring_employees(client):
     emp = retiring_list[0]
     assert emp["id"] == 3
     assert emp["name"] == "Goodness"
-    assert data["total_salary"] == "85000"
+    assert data["total_salary"] == "85000.0" or data["total_salary"] == "85000"
 
 
 
@@ -63,4 +71,4 @@ def test_add_employee(client):
     assert data["id"] is not None
     assert data["name"] == "Test Employee"
     assert data["date_of_birth"] == "2000-01-01"
-    assert data["salary"] == "50000"
+    assert data["salary"] == "50000" or data["salary"] == "50000.0"

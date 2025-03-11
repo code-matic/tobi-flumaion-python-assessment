@@ -5,7 +5,7 @@ from tests.conftest import FixedDateTime
 from src import main
 
 
-def test_main_compute(capsys, monkeypatch, mock_employees, test_db):
+def test_main_compute(capsys, monkeypatch, mock_employees, employee_repository):
     """
     Test the main() script function.
 
@@ -13,7 +13,6 @@ def test_main_compute(capsys, monkeypatch, mock_employees, test_db):
     Only "Goodness" to appear, with a total salary of 85000.
     """
 
-    monkeypatch.setattr("src.repository.employee.EMPLOYEES_DB", mock_employees)
     monkeypatch.setattr("src.scripts.employee.datetime", FixedDateTime)
     test_args = ["prog", "compute"]
     monkeypatch.setattr(sys, "argv", test_args)
@@ -31,7 +30,7 @@ def test_main_compute(capsys, monkeypatch, mock_employees, test_db):
 
 
 
-def test_main_add(capsys, monkeypatch, tmp_path):
+def test_main_add(capsys, monkeypatch, employee_repository):
     """
     Test main() when run with the 'add' subcommand.
     
@@ -42,11 +41,6 @@ def test_main_add(capsys, monkeypatch, tmp_path):
     
     Expect that the output confirms the new employee's details.
     """
-    test_file = tmp_path / "employees_test.json"
-    test_file.write_text("[]")
-    monkeypatch.setattr("src.core.db.DATA_FILE", str(test_file))
-    import src.repository.employee as emp_mod
-    importlib.reload(emp_mod)
 
     # Simulate command-line arguments for the "add" subcommand.
     cli_args =  ["prog", "add", "--name", "Samuel", "--date_of_birth", "1940-10-10", "--salary", "10000.0"]

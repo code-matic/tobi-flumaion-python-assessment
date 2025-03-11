@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from decimal import Decimal
 from datetime import date
 
@@ -12,6 +12,7 @@ class BaseEmployee(BaseModel):
 class Employee(BaseEmployee):
     '''Employee model'''
     id: int
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CreateEmployeeResponse(BaseModel):

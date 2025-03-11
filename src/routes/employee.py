@@ -1,17 +1,21 @@
 from fastapi import APIRouter, Depends
+
 from src.repository.employee import EmployeeRepository
 from src.services.retirement_service import RetirementService
 from src.interfaces.repository import AbstractRepository
 from src.schemas.employee import BaseEmployee, CreateEmployeeResponse, RetirementResponse, RetirementData
 from datetime import datetime
 from src.utils.utils import api_response
+from sqlalchemy.orm import Session
+from src.core.db import get_db
+
 
 
 
 employee_router = APIRouter()
 
-def get_employee_repository() -> AbstractRepository:
-    return EmployeeRepository()
+def get_employee_repository(db:Session = Depends(get_db)) -> AbstractRepository:
+    return EmployeeRepository(db)
 
 
 def get_retirement_service(

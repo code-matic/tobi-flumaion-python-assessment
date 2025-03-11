@@ -1,6 +1,5 @@
 import sys
 import os
-import json
 import pytest
 import importlib
 from datetime import date, datetime
@@ -8,6 +7,8 @@ from unittest.mock import patch
 from src.schemas.employee import Employee
 from src.repository.employee import EmployeeRepository
 from src.utils.utils import default_converter
+from src.core.db import Base, engine, SessionLocal
+
 
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -59,22 +60,60 @@ class FixedDateTime(datetime):
 
 
 
-@pytest.fixture
-def employee_repository(mock_employees, monkeypatch):
-    """
-    Fixture to create an EmployeeRepository instance using a fake load_employee.
-    """
-    monkeypatch.setattr("src.repository.employee.EMPLOYEES_DB", mock_employees)
-    yield EmployeeRepository()
+# @pytest.fixture
+# def employee_repository(mock_employees, monkeypatch):
+#     """
+#     Fixture to create an EmployeeRepository instance using a fake load_employee.
+#     """
+#     monkeypatch.setattr("src.repository.employee.EMPLOYEES_DB", mock_employees)
+#     yield EmployeeRepository()
+
+
+
+# @pytest.fixture
+# def test_db(tmp_path, monkeypatch, mock_employees):
+#     test_file = tmp_path / "employees_test.json"
+#     test_file.write_text(json.dumps([emp.model_dump() for emp in mock_employees], indent=2, default=default_converter))
+#     # Patch the DATA_FILE variable in src/core/db so that the repository loads from our test file.
+#     monkeypatch.setattr("src.core.db.DATA_FILE", str(test_file))
+#     import src.repository.employee as emp_mod
+#     importlib.reload(emp_mod)
+#     return str(test_file)
 
 
 
 @pytest.fixture
-def test_db(tmp_path, monkeypatch, mock_employees):
-    test_file = tmp_path / "employees_test.json"
-    test_file.write_text(json.dumps([emp.model_dump() for emp in mock_employees], indent=2, default=default_converter))
-    # Patch the DATA_FILE variable in src/core/db so that the repository loads from our test file.
-    monkeypatch.setattr("src.core.db.DATA_FILE", str(test_file))
-    import src.repository.employee as emp_mod
-    importlib.reload(emp_mod)
-    return str(test_file)
+def test_db(tmp_path, monkeypatch):
+    """
+    Create a temporary SQLite database for testing.
+    """
+    db_file = tmp_path / "test_employees.db"
+    test_db_url = f"sqlite:///{db_file}"
+    monkeypatch.setattr("src.core.db.DATABASE_URL", test_db_url)
+    import src.core.db as db_module
+    importlib.reload(db_module)
+    Base.metadata.create_all(bind=engine)
+    
+    yield test_db_url
+    Base.metadata.drop_all(bind=engine)
+
+@pytest.fixture
+def employee_repository(test_db, mock_employees):
+    """
+    Provides an EmployeeRepository instance backed by the temporary SQLite database.
+    It inserts the mock employee data into the test database.
+    """
+    db = SessionLocal()
+    repo = EmployeeRepository(db)
+    
+    Base = __import__("src.core.db", fromlist=["Base"]).Base
+    Base.metadata.drop_all(bind=db.get_bind())
+    Base.metadata.create_all(bind=db.get_bind())
+    
+    from src.schemas.employee import BaseEmployee
+    for emp in mock_employees:
+        base_emp = BaseEmployee(name=emp.name, date_of_birth=emp.date_of_birth, salary=emp.salary)
+        repo.create(base_emp)
+    
+    yield repo
+    db.close()

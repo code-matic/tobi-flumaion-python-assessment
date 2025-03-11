@@ -1,41 +1,40 @@
 from datetime import datetime
 from src.schemas.employee import Employee, BaseEmployee
-from src.core.db import load_employee, save_employees_to_file
 from src.interfaces.repository import AbstractRepository
 from src.utils.logger import setup_logger
+from src.models.employee import EmployeeORM
+from sqlalchemy.orm import Session
 
 logger = setup_logger(__name__)
-EMPLOYEES_DB = load_employee()
 class EmployeeRepository(AbstractRepository):
 
-    def __init__(self):
-        global EMPLOYEES_DB
-        self._employees = EMPLOYEES_DB 
+    def __init__(self, db: Session):
+        self.db = db
 
     def create(self, employee: BaseEmployee)-> Employee:
-        employee_data = employee.model_dump()
-        employee_data["id"] = str(len(self._employees) + 1)
-        employee = Employee(**employee_data)
-        self._employees.append(employee)
-        try:
-            save_employees_to_file(self._employees)
-        except Exception as e:
-            logger.error(f"Failed to write employee data: {e}")
-
-
-        return employee
+        db_employee = EmployeeORM(**employee.model_dump())
+        self.db.add(db_employee)
+        self.db.commit()
+        self.db.refresh(db_employee)
+        return Employee.model_validate(db_employee)
+    
 
     def get(self, id: int) -> Employee:
         """Get an employee"""
-        employee = [e for e in self._employees if e.id == id]
-        if employee:
-            return employee[0]
+        db_employee = self.db.query(EmployeeORM).filter(EmployeeORM.id == id).first()
+        if db_employee:
+            return Employee.model_validate(db_employee)
         return None
+       
 
     def delete(self, id: int):
         """Delete an employee"""
-        self._employees = [e for e in self._employees if e.id != id]
+        db_employee = self.db.query(EmployeeORM).filter(EmployeeORM.id == id).first()
+        if db_employee:
+            self.db.delete(db_employee)
+            self.db.commit()
 
     def get_all(self) -> list[Employee]:
         """Return all employees"""
-        return self._employees
+        db_employees = self.db.query(EmployeeORM).all()
+        return [Employee.model_validate(emp) for emp in db_employees]

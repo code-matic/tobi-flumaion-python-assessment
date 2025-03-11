@@ -1,5 +1,6 @@
 ''' Main entry for the application as a script. '''
 import argparse
+from src.core.db import SessionLocal, engine, Base
 from src.repository.employee import EmployeeRepository
 from src.services.retirement_service import RetirementService
 from src.utils.logger import setup_logger
@@ -7,6 +8,7 @@ from src.scripts.employee import compute_retirement_info, add_new_employee
 
 # 
 logger = setup_logger(__name__)
+Base.metadata.create_all(bind=engine)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -23,14 +25,17 @@ def main():
     args = parser.parse_args()
 
     logger.info("Starting Employee Retirement Application.")
-    employee_repository = EmployeeRepository()
-
-    if args.command == "compute":
-        compute_retirement_info(employee_repository)
-    elif args.command == "add":
-        add_new_employee(employee_repository, args)
-    else:
-        parser.print_help()
+    db = SessionLocal()
+    try:
+        employee_repository = EmployeeRepository(db)
+        if args.command == "compute":
+            compute_retirement_info(employee_repository)
+        elif args.command == "add":
+            add_new_employee(employee_repository, args)
+        else:
+            parser.print_help()
+    finally:
+        db.close()
 
 if __name__ == "__main__":
     main()

@@ -16,6 +16,7 @@ class Settings:
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = ["*"]
     PROJECT_NAME: str = "Retire Calc API"
+    DATABASE_URL: str = "sqlite:///./employee.db"
     PROJECT_DESCRIPTION: str = '''
 Problem Statement
 
