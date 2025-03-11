@@ -1,8 +1,10 @@
 from datetime import datetime
 from src.schemas.employee import Employee, BaseEmployee
-from src.core.db import load_employee
+from src.core.db import load_employee, save_employees_to_file
 from src.interfaces.repository import AbstractRepository
+from src.utils.logger import setup_logger
 
+logger = setup_logger(__name__)
 EMPLOYEES_DB = load_employee()
 class EmployeeRepository(AbstractRepository):
 
@@ -15,6 +17,12 @@ class EmployeeRepository(AbstractRepository):
         employee_data["id"] = str(len(self._employees) + 1)
         employee = Employee(**employee_data)
         self._employees.append(employee)
+        try:
+            save_employees_to_file(self._employees)
+        except Exception as e:
+            logger.error(f"Failed to write employee data: {e}")
+
+
         return employee
 
     def get(self, id: int) -> Employee:
