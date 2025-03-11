@@ -12,14 +12,14 @@ class EmployeeRepository(AbstractRepository):
         employee.id = str(len(self._employees) + 1)
         self._employees.append(employee)
 
-    def get(self, id: str) -> Employee:
+    def get(self, id: int) -> Employee:
         """Get an employee"""
         employee = [e for e in self._employees if e.id == id]
         if employee:
             return employee[0]
         return None
 
-    def delete(self, id: str):
+    def delete(self, id: int):
         """Delete an employee"""
         self._employees = [e for e in self._employees if e.id != id]
 
