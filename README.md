@@ -44,7 +44,7 @@ Install dependencies using Poetry:
 poetry install
 ```
 
-#### Running the Application
+### Running the Application
 #### CLI Script
 To run the script entry point locally:
 
